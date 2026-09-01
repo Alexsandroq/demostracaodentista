@@ -77,17 +77,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Dr. Rafael Mamede – Endodontia em Assis-SP" },
+      { title: "Dra. Maria Bianca – Odontopediatria em Assis-SP" },
       {
         name: "description",
         content:
-          "Tratamento de canal rápido, seguro e sem dor em Assis-SP. Especialista em Endodontia com atendimento humanizado e urgências 24h. Nota 5.0 no Google.",
+          "Odontopediatria acolhedora em Assis-SP. Primeira consulta sem medo, brinquedoteca e atendimento especial para crianças e pacientes atípicos. 5,0 no Google com 36 avaliações.",
       },
-      { property: "og:title", content: "Dr. Rafael Mamede – Endodontia em Assis-SP" },
+      { property: "og:title", content: "Dra. Maria Bianca – Odontopediatria em Assis-SP" },
       {
         property: "og:description",
         content:
-          "Tratamento de canal sem dor, tecnologia de ponta e plantão de urgências 24h. Agende pelo WhatsApp.",
+          "Consultas leves e divertidas para crianças, com carinho e paciência. Agende pelo WhatsApp (18) 99658-6696.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -101,8 +101,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito+Sans:wght@300;400;600;700&display=swap",
       },
+
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
