@@ -1,46 +1,45 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
-  MessageCircle,
   Star,
   Clock,
-  ShieldCheck,
-  Microscope,
+  Baby,
+  Smile,
   HeartHandshake,
   MapPin,
   Phone,
-  Stethoscope,
-  Activity,
-  Search,
+  ToyBrick,
   Sparkles,
+  ShieldCheck,
   Navigation,
+  Rainbow,
 } from "lucide-react";
-import drRafael from "@/assets/dr-rafael.jpg";
-import clinicHero from "@/assets/clinic-hero.jpg";
+import draBianca from "@/assets/dra-bianca.jpg";
+import clinicaKids from "@/assets/clinica-kids.jpg";
 
 const WHATSAPP_URL =
-  "https://wa.me/5518996471470?text=" +
-  encodeURIComponent("Olá, Dr. Rafael! Gostaria de agendar uma consulta/urgência.");
+  "https://wa.me/5518996586696?text=" +
+  encodeURIComponent(
+    "Olá, Dra. Maria Bianca! Gostaria de agendar uma consulta para meu filho(a).",
+  );
+const ADDRESS = "Av. Nove de Julho, 772 - Centro, Assis - SP, 19800-020";
 const MAPS_URL =
-  "https://www.google.com/maps/search/?api=1&query=" +
-  encodeURIComponent("Av. Otto Ribeiro, 731 - Jardim Paulista, Assis - SP");
+  "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(ADDRESS);
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Tratamento de Canal Sem Dor em Assis-SP | Dr. Rafael Mamede" },
+      { title: "Odontopediatra em Assis-SP | Dra. Maria Bianca" },
       {
         name: "description",
         content:
-          "Endodontista em Assis-SP. Tratamento de canal rápido, seguro e sem dor. Atendimento humanizado, tecnologia de ponta e urgências 24h. Nota 5.0 no Google. Agende pelo WhatsApp.",
+          "Dra. Maria Bianca, odontopediatra em Assis-SP. Consultas sem medo, brinquedoteca, carinho e paciência — inclusive com pacientes atípicos. 5,0 no Google (36 avaliações).",
       },
-      {
-        property: "og:title",
-        content: "Tratamento de Canal Sem Dor em Assis-SP | Dr. Rafael Mamede",
-      },
+      { property: "og:title", content: "Odontopediatra em Assis-SP | Dra. Maria Bianca" },
       {
         property: "og:description",
         content:
-          "Especialista em Endodontia com atendimento humanizado e suporte 24h para urgências. ★ 5.0 no Google.",
+          "Atendimento infantil acolhedor, lúdico e sem trauma no Centro de Assis-SP. Agende pelo WhatsApp.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -51,27 +50,30 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Dentist",
-          name: "Dr. Rafael Mamede – Endodontia",
+          name: "Dra. Maria Bianca – Odontopediatria",
           address: {
             "@type": "PostalAddress",
-            streetAddress: "Av. Otto Ribeiro, 731 - Jardim Paulista",
+            streetAddress: "Av. Nove de Julho, 772 - Centro",
             addressLocality: "Assis",
             addressRegion: "SP",
+            postalCode: "19800-020",
             addressCountry: "BR",
           },
-          telephone: "+55-18-99647-1470",
+          telephone: "+55-18-99658-6696",
           aggregateRating: {
             "@type": "AggregateRating",
             ratingValue: "5.0",
-            reviewCount: "17",
+            reviewCount: "36",
           },
-          openingHours: "Mo-Su 00:00-23:59",
+          openingHours: "Mo-Fr 08:00-18:00",
         }),
       },
     ],
   }),
   component: LandingPage,
 });
+
+/* ---------- helpers ---------- */
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -81,42 +83,79 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-function CtaButton({
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setVisible(true);
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{ transitionDelay: `${delay}ms` }}
+      className={`reveal ${visible ? "is-visible" : ""} ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+function WhatsCta({
   children,
   className = "",
   pulse = false,
-  variant = "solid",
+  variant = "whatsapp",
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   pulse?: boolean;
-  variant?: "solid" | "ghost" | "outline";
+  variant?: "whatsapp" | "coral" | "outline";
 }) {
   const styles: Record<string, string> = {
-    solid: "bg-whatsapp text-whatsapp-foreground shadow-lg",
-    ghost:
-      "bg-primary-foreground/15 text-primary-foreground backdrop-blur-sm border border-primary-foreground/40",
-    outline:
-      "border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground",
+    whatsapp: "bg-whatsapp text-whatsapp-foreground shadow-lg shadow-whatsapp/25",
+    coral: "bg-coral text-coral-foreground shadow-lg shadow-coral/30",
+    outline: "border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground",
   };
   return (
     <a
       href={WHATSAPP_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center justify-center gap-3 rounded-full px-8 py-4 text-sm font-medium uppercase tracking-[0.12em] transition-all hover:scale-[1.03] active:scale-[0.98] ${
-        styles[variant]
-      } ${pulse ? "animate-pulse-ring" : ""} ${className}`}
+      className={`group inline-flex items-center justify-center gap-2.5 rounded-2xl px-7 py-4 font-display text-base font-700 transition-all hover:-translate-y-0.5 active:translate-y-0 ${styles[variant]} ${pulse ? "animate-pulse-ring" : ""} ${className}`}
     >
       {children}
-      <WhatsAppIcon className="h-5 w-5 shrink-0" />
+      <WhatsAppIcon className="h-5 w-5 shrink-0 transition-transform group-hover:rotate-6" />
     </a>
   );
 }
 
-function Stars() {
+function Stars({ className = "" }: { className?: string }) {
   return (
-    <span className="flex gap-0.5" aria-label="5 estrelas">
+    <span className={`flex gap-0.5 ${className}`} aria-label="5 estrelas">
       {Array.from({ length: 5 }).map((_, i) => (
         <Star key={i} className="h-4 w-4 fill-star text-star" />
       ))}
@@ -124,426 +163,486 @@ function Stars() {
   );
 }
 
+const NAV = [
+  ["Atendimento", "#atendimento"],
+  ["Serviços", "#servicos"],
+  ["A Dra.", "#sobre"],
+  ["Avaliações", "#avaliacoes"],
+  ["Contato", "#localizacao"],
+] as const;
+
+/* ---------- página ---------- */
+
 function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* ===== HERO ===== */}
-      <header
-        className="relative flex min-h-[92vh] flex-col overflow-hidden bg-primary bg-cover bg-center"
-        style={{ backgroundImage: `url(${clinicHero})` }}
-      >
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{ background: "var(--gradient-hero)" }}
-        />
-
-        <nav className="relative mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-6">
-          <div className="flex min-w-0 items-center gap-3">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-primary-foreground/40 text-primary-foreground">
-              <Stethoscope className="h-5 w-5" />
+      {/* ===== TOPO ===== */}
+      <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5">
+          <a href="#topo" className="flex min-w-0 items-center gap-3">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-coral text-coral-foreground animate-wiggle">
+              <Smile className="h-6 w-6" />
             </span>
-            <div className="min-w-0 leading-tight">
-              <p className="truncate text-base font-light tracking-wide text-primary-foreground">
-                Dr. <span className="font-semibold">Rafael Mamede</span>
-              </p>
-              <p className="text-[11px] uppercase tracking-[0.2em] text-primary-foreground/70">
-                Endodontia
-              </p>
-            </div>
-          </div>
-          <div className="hidden items-center gap-8 lg:flex">
-            {[
-              ["Diferenciais", "#diferenciais"],
-              ["Serviços", "#servicos"],
-              ["Sobre", "#sobre"],
-              ["Avaliações", "#avaliacoes"],
-              ["Localização", "#localizacao"],
-            ].map(([label, href]) => (
+            <span className="min-w-0 leading-tight">
+              <span className="block truncate font-display text-lg font-700 text-primary">
+                Dra. Maria Bianca
+              </span>
+              <span className="block text-[11px] font-600 uppercase tracking-[0.18em] text-muted-foreground">
+                Odontopediatria
+              </span>
+            </span>
+          </a>
+          <nav className="hidden items-center gap-7 lg:flex">
+            {NAV.map(([label, href]) => (
               <a
                 key={href}
                 href={href}
-                className="text-xs uppercase tracking-[0.14em] text-primary-foreground/85 transition-colors hover:text-primary-foreground"
+                className="text-sm font-600 text-muted-foreground transition-colors hover:text-coral"
               >
                 {label}
               </a>
             ))}
-          </div>
-        </nav>
-
-        <div className="relative mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-6 py-16 text-center">
-          <div className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-4 py-2 backdrop-blur-sm">
-            <Stars />
-            <span className="text-xs font-medium tracking-wide text-primary-foreground">
-              5.0 no Google • 17+ avaliações
-            </span>
-          </div>
-
-          <h1 className="text-3xl font-light leading-tight tracking-tight text-primary-foreground sm:text-5xl sm:leading-[1.15]">
-            Tratamento de canal <span className="font-semibold">rápido, seguro e sem dor</span>{" "}
-            em Assis-SP
-          </h1>
-
-          <p className="mt-5 max-w-2xl text-base font-light text-primary-foreground/85 sm:text-lg">
-            Especialista em Endodontia com atendimento humanizado, tecnologia de ponta e
-            suporte 24h para urgências.
-          </p>
-
-          <div className="mt-9 flex w-full flex-col items-center justify-center gap-4 sm:w-auto sm:flex-row">
-            <CtaButton variant="ghost" className="w-full sm:w-auto">
-              Agendar
-            </CtaButton>
-            <a
-              href="#servicos"
-              className="inline-flex w-full items-center justify-center rounded-full border border-primary-foreground/70 px-8 py-4 text-sm font-medium uppercase tracking-[0.12em] text-primary-foreground transition-colors hover:bg-primary-foreground hover:text-primary sm:w-auto"
-            >
-              Saiba mais
-            </a>
-          </div>
-
-          <p className="mt-7 flex items-center gap-2 text-xs font-light text-primary-foreground/75">
-            <Clock className="h-3.5 w-3.5" /> Atendimento 24h • Plantão de urgências todos os dias
-          </p>
+          </nav>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden shrink-0 items-center gap-2 rounded-xl bg-primary px-5 py-2.5 font-display text-sm font-700 text-primary-foreground transition-transform hover:-translate-y-0.5 sm:inline-flex"
+          >
+            Agendar <WhatsAppIcon className="h-4 w-4" />
+          </a>
         </div>
       </header>
 
-      {/* ===== BANNER DE URGÊNCIA ===== */}
-      <section className="bg-accent">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-5 py-10 text-center sm:flex-row sm:justify-between sm:text-left">
-          <div className="flex min-w-0 items-center gap-4">
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary text-primary-foreground animate-float-soft">
-              <Activity className="h-7 w-7" />
+      {/* ===== HERO ===== */}
+      <section id="topo" className="relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-32 -top-24 h-80 w-80 animate-blob bg-accent/60 blur-[2px]"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-20 top-40 h-72 w-72 animate-blob bg-secondary/70"
+          style={{ animationDelay: "-4s" }}
+        />
+
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-[1.05fr_1fr]">
+          <Reveal>
+            <span className="inline-flex items-center gap-2 rounded-full bg-sun px-4 py-2 text-xs font-700 uppercase tracking-wider text-sun-foreground">
+              <Rainbow className="h-4 w-4" /> Consultório que acolhe todas as famílias
             </span>
-            <div className="min-w-0">
-              <h2 className="text-lg font-light text-accent-foreground sm:text-xl">
-                Está com dor de dente agora?
-              </h2>
-              <p className="text-sm font-medium text-accent-foreground/80">
-                Não espere a dor piorar. Atendimento de urgência com alívio rápido e seguro.
-              </p>
+
+            <h1 className="mt-5 font-display text-4xl font-800 leading-[1.1] text-primary sm:text-[3.4rem]">
+              O primeiro dentista da sua criança pode ser{" "}
+              <span className="relative inline-block text-coral">
+                uma boa lembrança
+                <svg
+                  viewBox="0 0 300 14"
+                  className="absolute -bottom-1 left-0 h-3 w-full text-sun"
+                  aria-hidden="true"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M2 9C60 3 120 3 180 7c40 2 80 3 118-2"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>
+            </h1>
+
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+              A Dra. Maria Bianca cuida dos dentinhos com paciência, brincadeira e muito
+              carinho — no Centro de Assis-SP. Atendimento especializado também para crianças
+              autistas e pacientes atípicos.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <WhatsCta pulse>Agendar no WhatsApp</WhatsCta>
+              <a
+                href="#servicos"
+                className="inline-flex items-center justify-center rounded-2xl border-2 border-primary/25 px-7 py-4 font-display text-base font-700 text-primary transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground"
+              >
+                Ver atendimentos
+              </a>
             </div>
-          </div>
-          <CtaButton pulse className="shrink-0">
-            Atendimento de Urgência 24h
-          </CtaButton>
+
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <span className="inline-flex items-center gap-2 rounded-2xl bg-card px-4 py-2.5 shadow-sm">
+                <Stars />
+                <span className="text-sm font-700">5,0 no Google</span>
+                <span className="text-sm text-muted-foreground">• 36 avaliações</span>
+              </span>
+              <span className="inline-flex items-center gap-2 text-sm font-600 text-muted-foreground">
+                <Clock className="h-4 w-4 text-coral" /> Seg a Sex • fecha às 18:00
+              </span>
+            </div>
+          </Reveal>
+
+          <Reveal delay={120} className="relative">
+            <div
+              aria-hidden="true"
+              className="absolute inset-4 animate-blob bg-coral/25"
+            />
+            <img
+              src={draBianca}
+              alt="Dra. Maria Bianca atendendo uma criança em seu consultório de odontopediatria em Assis-SP"
+              width={896}
+              height={1024}
+              className="relative mx-auto w-full max-w-md rounded-[2.5rem] object-cover shadow-2xl"
+            />
+            <div className="animate-float-soft absolute -bottom-5 left-2 flex items-center gap-3 rounded-2xl bg-card px-4 py-3 shadow-xl sm:left-6">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent text-accent-foreground">
+                <ToyBrick className="h-5 w-5" />
+              </span>
+              <span className="text-sm leading-tight">
+                <span className="block font-display font-700">Brinquedoteca</span>
+                <span className="text-muted-foreground">enquanto você espera</span>
+              </span>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* ===== DIFERENCIAIS ===== */}
-      <section id="diferenciais" className="mx-auto max-w-6xl px-5 py-16 sm:py-20">
-        <div className="text-center">
-          <p className="text-sm font-bold uppercase tracking-widest text-primary/60">
-            Por que escolher o Dr. Rafael
-          </p>
-          <h2 className="mt-2 text-2xl font-light tracking-tight sm:text-3xl">
-            Cuidado que une tecnologia e tranquilidade
-          </h2>
-        </div>
-
-        <div className="mt-10 grid gap-5 sm:grid-cols-3">
+      {/* ===== FAIXA DE ATENDIMENTO ===== */}
+      <section id="atendimento" className="bg-primary">
+        <div className="mx-auto grid max-w-6xl gap-6 px-5 py-12 sm:grid-cols-3">
           {[
-            {
-              icon: HeartHandshake,
-              title: "Tratamento Humanizado",
-              text: "Foco total no seu conforto: anestesia eficiente e procedimento com zero dor, do início ao fim.",
-            },
-            {
-              icon: Microscope,
-              title: "Tecnologia Avançada",
-              text: "Diagnóstico preciso com recursos modernos e tratamento concluído em poucas sessões.",
-            },
-            {
-              icon: ShieldCheck,
-              title: "Especialista em Endodontia",
-              text: "Atendimento dedicado exclusivamente a salvar o seu dente, com segurança e experiência.",
-            },
-          ].map(({ icon: Icon, title, text }) => (
-            <article
-              key={title}
-              className="rounded-2xl border border-border bg-card p-7 shadow-sm transition-shadow hover:shadow-md"
-            >
-              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-secondary text-primary">
-                <Icon className="h-6 w-6" />
-              </span>
-              <h3 className="mt-4 text-lg font-bold">{title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
-            </article>
+            { icon: Baby, title: "Do bebê ao adolescente", text: "Da primeira dentinha à troca dos dentes permanentes." },
+            { icon: HeartHandshake, title: "Pacientes atípicos", text: "Manejo cuidadoso para crianças autistas e com necessidades especiais." },
+            { icon: ShieldCheck, title: "Sem trauma, sem susto", text: "Abordagem lúdica que transforma o medo em curiosidade." },
+          ].map(({ icon: Icon, title, text }, i) => (
+            <Reveal key={title} delay={i * 110}>
+              <div className="flex items-start gap-4">
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary-foreground/12 text-primary-foreground">
+                  <Icon className="h-6 w-6" />
+                </span>
+                <div className="min-w-0">
+                  <h2 className="font-display text-lg font-700 text-primary-foreground">{title}</h2>
+                  <p className="mt-1 text-sm leading-relaxed text-primary-foreground/75">{text}</p>
+                </div>
+              </div>
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* ===== SERVIÇOS ===== */}
-      <section id="servicos" className="bg-muted">
-        <div className="mx-auto max-w-6xl px-5 py-16 sm:py-20">
-          <div className="text-center">
-            <p className="text-sm font-bold uppercase tracking-widest text-primary/60">Serviços</p>
-            <h2 className="mt-2 text-2xl font-light tracking-tight sm:text-3xl">
-              Especialidades em Endodontia
-            </h2>
-          </div>
+      <section id="servicos" className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+        <Reveal className="max-w-2xl">
+          <p className="font-display text-sm font-700 uppercase tracking-[0.2em] text-coral">
+            Atendimentos
+          </p>
+          <h2 className="mt-2 font-display text-3xl font-800 text-primary sm:text-4xl">
+            Cuidado completo, no ritmo da criança
+          </h2>
+        </Reveal>
 
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {[
-              {
-                icon: Stethoscope,
-                title: "Tratamento e Retratamento de Canal",
-                text: "Procedimentos precisos para eliminar a infecção e preservar seu dente natural.",
-              },
-              {
-                icon: Activity,
-                title: "Urgência e Dor Aguda",
-                text: "Atendimento imediato, 24h, para aliviar a dor e tratar a causa com segurança.",
-              },
-              {
-                icon: Search,
-                title: "Diagnóstico de Dores Orofaciais",
-                text: "Investigação detalhada para identificar a origem exata da sua dor.",
-              },
-              {
-                icon: Sparkles,
-                title: "Micro-Endodontia e Preservação",
-                text: "Técnicas minimamente invasivas com microscópio para máxima preservação dentária.",
-              },
-            ].map(({ icon: Icon, title, text }) => (
-              <article
-                key={title}
-                className="flex items-start gap-4 rounded-2xl border border-border bg-card p-6"
-              >
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground">
-                  <Icon className="h-5 w-5" />
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            {
+              icon: Smile,
+              title: "Primeira consulta",
+              text: "Visita de adaptação, sem procedimentos: a criança conhece o consultório brincando.",
+            },
+            {
+              icon: Sparkles,
+              title: "Prevenção e limpeza",
+              text: "Aplicação de flúor, selante e orientação de escovação para pais e filhos.",
+            },
+            {
+              icon: ToyBrick,
+              title: "Restaurações infantis",
+              text: "Tratamento de cáries com técnicas rápidas, confortáveis e sem dor.",
+            },
+            {
+              icon: Baby,
+              title: "Odontologia para bebês",
+              text: "Acompanhamento desde os primeiros dentinhos, amamentação e chupeta.",
+            },
+            {
+              icon: HeartHandshake,
+              title: "Pacientes atípicos",
+              text: "Atendimento adaptado, com tempo e comunicação específicos para cada criança.",
+            },
+            {
+              icon: ShieldCheck,
+              title: "Urgências infantis",
+              text: "Traumas, quedas e dor de dente avaliados com prioridade e acolhimento.",
+            },
+          ].map(({ icon: Icon, title, text }, i) => (
+            <Reveal key={title} delay={(i % 3) * 90}>
+              <article className="card-lift h-full rounded-3xl border border-border bg-card p-7">
+                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-secondary text-primary">
+                  <Icon className="h-6 w-6" />
                 </span>
-                <div className="min-w-0">
-                  <h3 className="font-bold">{title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{text}</p>
-                </div>
+                <h3 className="mt-4 font-display text-xl font-700">{title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
               </article>
-            ))}
-          </div>
-
-          <div className="mt-10 text-center">
-            <CtaButton>Agendar minha avaliação</CtaButton>
-          </div>
+            </Reveal>
+          ))}
         </div>
+
+        <Reveal className="mt-12">
+          <div className="flex flex-col items-center gap-5 overflow-hidden rounded-[2rem] bg-accent px-7 py-9 text-center sm:flex-row sm:justify-between sm:text-left">
+            <div>
+              <h3 className="font-display text-2xl font-700 text-accent-foreground">
+                Quer tirar uma dúvida antes de marcar?
+              </h3>
+              <p className="mt-1 text-sm font-600 text-accent-foreground/80">
+                Fale direto com a equipe da Dra. Bianca pelo WhatsApp — resposta rápida.
+              </p>
+            </div>
+            <WhatsCta variant="coral" className="shrink-0">
+              Conversar agora
+            </WhatsCta>
+          </div>
+        </Reveal>
       </section>
 
       {/* ===== SOBRE ===== */}
-      <section id="sobre" className="mx-auto max-w-6xl px-5 py-16 sm:py-20">
-        <div className="grid items-center gap-10 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-          <div className="relative mx-auto w-full max-w-sm">
-            <div className="absolute -inset-3 rounded-[2rem] bg-accent" aria-hidden="true" />
+      <section id="sobre" className="bg-muted">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 sm:py-24 lg:grid-cols-[1fr_1.05fr]">
+          <Reveal>
             <img
-              src={drRafael}
-              alt="Dr. Rafael Mamede, endodontista em Assis-SP"
-              width={896}
-              height={1024}
+              src={clinicaKids}
+              alt="Recepção com espaço lúdico do consultório da Dra. Maria Bianca em Assis-SP"
+              width={1600}
+              height={1000}
               loading="lazy"
-              className="relative w-full rounded-[2rem] object-cover shadow-xl"
+              className="w-full rounded-[2rem] object-cover shadow-xl"
             />
-          </div>
-          <div>
-            <p className="text-sm font-bold uppercase tracking-widest text-primary/60">
-              Sobre o especialista
+          </Reveal>
+          <Reveal delay={100}>
+            <p className="font-display text-sm font-700 uppercase tracking-[0.2em] text-coral">
+              Quem cuida
             </p>
-            <h2 className="mt-2 text-2xl font-light tracking-tight sm:text-3xl">
-              Dr. Rafael Mamede
+            <h2 className="mt-2 font-display text-3xl font-800 text-primary sm:text-4xl">
+              Dra. Maria Bianca
             </h2>
-            <p className="mt-1 text-sm font-semibold text-muted-foreground">
-              Endodontista • Especialista em Tratamento de Canal
+            <p className="mt-1 font-600 text-muted-foreground">
+              Cirurgiã-dentista • Odontopediatria
             </p>
             <p className="mt-5 leading-relaxed text-muted-foreground">
-              Dedicado à saúde bucal da comunidade de Assis e região, o Dr. Rafael Mamede
-              construiu sua reputação com um atendimento que coloca o paciente em primeiro
-              lugar: escuta atenta, explicações claras e procedimentos sem dor.
+              Atender criança exige mais do que técnica: exige escuta, tempo e afeto. É assim
+              que a Dra. Maria Bianca conduz cada consulta no Centro de Assis — explicando cada
+              passo em linguagem de criança, respeitando o tempo de cada uma e transformando o
+              consultório em um lugar seguro.
             </p>
             <p className="mt-4 leading-relaxed text-muted-foreground">
-              Seu compromisso é devolver o bem-estar e o sorriso de cada paciente — salvando
-              dentes que muitos acreditavam perdidos, com tecnologia de ponta e um cuidado
-              genuinamente humano.
+              Seu consultório também é reconhecido pelo acolhimento a famílias LGBTQ+ e pelo
+              cuidado com crianças autistas e pacientes atípicos — porque todo mundo merece
+              uma consulta tranquila.
             </p>
-            <div className="mt-6 flex flex-wrap items-center gap-4">
-              <CtaButton>Falar com o Dr. Rafael</CtaButton>
-              <span className="inline-flex items-center gap-2 text-sm font-semibold text-foreground">
-                <Stars /> 5.0 no Google
+            <div className="mt-7 flex flex-wrap items-center gap-4">
+              <WhatsCta>Falar com a Dra. Bianca</WhatsCta>
+              <span className="inline-flex items-center gap-2 font-600">
+                <Stars /> 5,0 • 36 avaliações
               </span>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* ===== PROVA SOCIAL ===== */}
-      <section id="avaliacoes" className="bg-primary">
-        <div className="mx-auto max-w-6xl px-5 py-16 sm:py-20">
-          <div className="text-center">
-            <div className="mx-auto inline-flex items-center gap-3 rounded-2xl bg-primary-foreground/10 px-5 py-3">
-              <span className="text-4xl font-semibold text-primary-foreground">5.0</span>
-              <div className="text-left leading-tight">
-                <Stars />
-                <p className="text-xs font-semibold text-primary-foreground/80">
-                  17+ avaliações no Google
-                </p>
-              </div>
-            </div>
-            <h2 className="mt-6 text-2xl font-light tracking-tight text-primary-foreground sm:text-3xl">
-              Quem tratou, recomenda
-            </h2>
+      {/* ===== DEPOIMENTOS ===== */}
+      <section id="avaliacoes" className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+        <Reveal className="text-center">
+          <div className="inline-flex items-center gap-4 rounded-3xl bg-card px-6 py-4 shadow-lg">
+            <span className="font-display text-5xl font-800 text-coral">5,0</span>
+            <span className="text-left leading-tight">
+              <Stars />
+              <span className="mt-1 block text-sm font-600 text-muted-foreground">
+                36 avaliações no Google
+              </span>
+            </span>
           </div>
+          <h2 className="mt-6 font-display text-3xl font-800 text-primary sm:text-4xl">
+            O que as famílias de Assis dizem
+          </h2>
+        </Reveal>
 
-          <div className="mt-10 grid gap-5 sm:grid-cols-3">
-            {[
-              {
-                name: "Mariana S.",
-                text: "Estava com muito medo do tratamento de canal, mas o Dr. Rafael me explicou tudo com calma. Não senti dor nenhuma. Profissional excepcional!",
-              },
-              {
-                name: "Carlos E.",
-                text: "Tive uma urgência num domingo à noite e fui atendido prontamente. Alívio imediato da dor e um cuidado que eu nunca tinha visto. Recomendo de olhos fechados.",
-              },
-              {
-                name: "Fernanda L.",
-                text: "Consultório moderno, atendimento humanizado e resultado perfeito. Salvou meu dente que eu achava que teria que extrair. Nota mil!",
-              },
-            ].map(({ name, text }) => (
-              <figure
-                key={name}
-                className="rounded-2xl bg-card p-6 shadow-lg"
-              >
+        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+          {[
+            {
+              name: "Priscila Camargo",
+              meta: "Local Guide • 8 meses atrás",
+              text: "Dra. Maria Bianca é muito atenciosa e dinâmica com as crianças, meus filhos gostaram muito dela, e ela cuidou muito bem dos dentes deles. Recomendo essa excelente profissional!",
+            },
+            {
+              name: "Cristina Cardoso",
+              meta: "10 avaliações • 1 ano atrás",
+              text: "Filho autista com dente do siso para tirar. Precisava de um profissional que soubesse lidar com autista. Conheci esse anjo, chamado Bianca. Um ser iluminado que tem amor pelo que faz. Muito atenciosa e com muita paciência.",
+            },
+            {
+              name: "Karine Campana",
+              meta: "8 avaliações • 1 ano atrás",
+              text: "Atendimento impecável. Dra. Maria Bianca é muito simpática, atenciosa, humana e competente. Clínica aconchegante, nos surpreendemos com a brinquedoteca que facilita quando os pais precisam levar os irmãos na consulta.",
+            },
+          ].map(({ name, meta, text }, i) => (
+            <Reveal key={name} delay={i * 110}>
+              <figure className="card-lift flex h-full flex-col rounded-3xl border border-border bg-card p-7">
                 <Stars />
-                <blockquote className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                <blockquote className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
                   “{text}”
                 </blockquote>
-                <figcaption className="mt-4 flex items-center gap-2.5">
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-sm font-bold text-primary">
+                <figcaption className="mt-5 flex items-center gap-3 border-t border-border pt-4">
+                  <span className="grid h-10 w-10 place-items-center rounded-2xl bg-secondary font-display text-base font-700 text-primary">
                     {name[0]}
                   </span>
-                  <span className="text-sm font-bold">{name}</span>
+                  <span className="leading-tight">
+                    <span className="block font-display font-700">{name}</span>
+                    <span className="block text-xs text-muted-foreground">{meta}</span>
+                  </span>
                 </figcaption>
               </figure>
-            ))}
-          </div>
+            </Reveal>
+          ))}
         </div>
       </section>
 
       {/* ===== LOCALIZAÇÃO ===== */}
-      <section id="localizacao" className="mx-auto max-w-6xl px-5 py-16 sm:py-20">
-        <div className="text-center">
-          <p className="text-sm font-bold uppercase tracking-widest text-primary/60">
-            Localização
-          </p>
-          <h2 className="mt-2 text-2xl font-light tracking-tight sm:text-3xl">
-            Perto de você, em Assis-SP
-          </h2>
-        </div>
+      <section id="localizacao" className="bg-secondary/50">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+          <Reveal className="max-w-2xl">
+            <p className="font-display text-sm font-700 uppercase tracking-[0.2em] text-coral">
+              Onde estamos
+            </p>
+            <h2 className="mt-2 font-display text-3xl font-800 text-primary sm:text-4xl">
+              No Centro de Assis, fácil de chegar
+            </h2>
+          </Reveal>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          <div className="flex flex-col justify-center gap-5 rounded-2xl border border-border bg-card p-7">
-            <div className="flex items-start gap-3">
-              <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-              <div>
-                <p className="font-bold">Endereço</p>
-                <p className="text-sm text-muted-foreground">
-                  Av. Otto Ribeiro, 731 - Jardim Paulista
-                  <br />
-                  Assis - SP
-                </p>
+          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+            <Reveal>
+              <div className="flex h-full flex-col justify-center gap-5 rounded-3xl bg-card p-8 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-coral" />
+                  <div>
+                    <p className="font-display font-700">Endereço</p>
+                    <p className="text-sm text-muted-foreground">
+                      Av. Nove de Julho, 772 - Centro
+                      <br />
+                      Assis - SP, 19800-020
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Phone className="mt-0.5 h-5 w-5 shrink-0 text-coral" />
+                  <div>
+                    <p className="font-display font-700">Telefone / WhatsApp</p>
+                    <p className="text-sm text-muted-foreground">(18) 99658-6696</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Clock className="mt-0.5 h-5 w-5 shrink-0 text-coral" />
+                  <div>
+                    <p className="font-display font-700">Horário</p>
+                    <p className="text-sm text-muted-foreground">
+                      Segunda a sexta, das 08:00 às 18:00
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+                  <a
+                    href={MAPS_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-primary px-5 py-3 font-display text-sm font-700 text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                  >
+                    <Navigation className="h-4 w-4" />
+                    Como chegar
+                  </a>
+                  <WhatsCta className="px-5 py-3 text-sm">Chamar no WhatsApp</WhatsCta>
+                </div>
               </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Phone className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-              <div>
-                <p className="font-bold">Telefone / WhatsApp</p>
-                <p className="text-sm text-muted-foreground">(18) 99647-1470</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Clock className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-              <div>
-                <p className="font-bold">Atendimento</p>
-                <p className="text-sm text-muted-foreground">
-                  24h • Plantão de Urgências
-                </p>
-              </div>
-            </div>
-            <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-              <a
-                href={MAPS_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-primary px-5 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-              >
-                <Navigation className="h-4 w-4" />
-                Como Chegar (Google Maps)
-              </a>
-              <CtaButton className="px-5 py-3 text-sm">Chamar no WhatsApp</CtaButton>
-            </div>
-          </div>
+            </Reveal>
 
-          <div className="overflow-hidden rounded-2xl border border-border shadow-sm">
-            <iframe
-              title="Mapa — Dr. Rafael Mamede, Av. Otto Ribeiro, 731, Assis-SP"
-              src="https://www.google.com/maps?q=Av.+Otto+Ribeiro,+731+-+Jardim+Paulista,+Assis+-+SP&output=embed"
-              className="h-full min-h-[320px] w-full"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              allowFullScreen
-            />
+            <Reveal delay={110}>
+              <div className="h-full overflow-hidden rounded-3xl border border-border shadow-sm">
+                <iframe
+                  title="Mapa — Dra. Maria Bianca, Av. Nove de Julho, 772, Assis-SP"
+                  src="https://www.google.com/maps?q=Av.+Nove+de+Julho,+772+-+Centro,+Assis+-+SP,+19800-020&output=embed"
+                  className="h-full min-h-[340px] w-full"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* ===== CTA FINAL / FOOTER ===== */}
+      {/* ===== FOOTER ===== */}
       <footer className="bg-primary">
-        <div className="mx-auto max-w-6xl px-5 py-14 text-center">
-          <h2 className="text-2xl font-light tracking-tight text-primary-foreground sm:text-3xl">
-            Não conviva com a dor. Resolva hoje.
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-sm font-medium text-primary-foreground/75">
-            Agende sua consulta ou urgência diretamente pelo WhatsApp. Resposta rápida,
-            atendimento 24h.
-          </p>
-          <div className="mt-7">
-            <CtaButton pulse>Falar com o Dr. Rafael no WhatsApp</CtaButton>
-          </div>
+        <div className="mx-auto max-w-6xl px-5 py-16">
+          <Reveal className="text-center">
+            <h2 className="font-display text-3xl font-800 text-primary-foreground sm:text-4xl">
+              Vamos cuidar desse sorriso?
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-primary-foreground/75">
+              Agende a consulta do seu filho pelo WhatsApp. Atendimento leve, sem pressa e sem
+              medo.
+            </p>
+            <div className="mt-7">
+              <WhatsCta pulse>Agendar consulta</WhatsCta>
+            </div>
+          </Reveal>
 
-          <div className="mt-12 grid gap-8 border-t border-primary-foreground/15 pt-8 text-left sm:grid-cols-3">
+          <div className="mt-14 grid gap-8 border-t border-primary-foreground/15 pt-9 sm:grid-cols-3">
             <div>
-              <p className="font-bold text-primary-foreground">Dr. Rafael Mamede</p>
+              <p className="font-display text-lg font-700 text-primary-foreground">
+                Dra. Maria Bianca
+              </p>
               <p className="mt-1 text-sm text-primary-foreground/70">
-                Endodontia • Tratamento de Canal
+                Odontopediatria
                 <br />
                 Assis - SP
               </p>
             </div>
             <div>
-              <p className="font-bold text-primary-foreground">Horários</p>
-              <p className="mt-1 text-sm text-primary-foreground/70">
-                Atendimento 24h
-                <br />
-                Plantão de Urgências todos os dias
-              </p>
+              <p className="font-display font-700 text-primary-foreground">Links rápidos</p>
+              <ul className="mt-2 space-y-1.5">
+                {NAV.map(([label, href]) => (
+                  <li key={href}>
+                    <a
+                      href={href}
+                      className="text-sm text-primary-foreground/70 transition-colors hover:text-primary-foreground"
+                    >
+                      {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
             <div>
-              <p className="font-bold text-primary-foreground">Contato</p>
-              <p className="mt-1 text-sm text-primary-foreground/70">
-                (18) 99647-1470
+              <p className="font-display font-700 text-primary-foreground">Contato</p>
+              <p className="mt-2 text-sm text-primary-foreground/70">
+                (18) 99658-6696
                 <br />
-                Av. Otto Ribeiro, 731 - Jardim Paulista
+                Av. Nove de Julho, 772 - Centro
+                <br />
+                Seg a Sex, 08:00 – 18:00
               </p>
             </div>
           </div>
 
-          <p className="mt-8 text-xs text-primary-foreground/50">
-            © {new Date().getFullYear()} Dr. Rafael Mamede – Endodontia. Todos os direitos
+          <p className="mt-10 text-center text-xs text-primary-foreground/50">
+            © {new Date().getFullYear()} Dra. Maria Bianca – Odontopediatria. Todos os direitos
             reservados.
           </p>
         </div>
       </footer>
 
-      {/* ===== BOTÃO FLUTUANTE WHATSAPP ===== */}
+      {/* ===== BOTÃO FLUTUANTE ===== */}
       <a
         href={WHATSAPP_URL}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Falar no WhatsApp"
-        className="fixed bottom-5 right-5 z-50 grid h-16 w-16 place-items-center rounded-full bg-whatsapp text-whatsapp-foreground shadow-xl animate-pulse-ring transition-transform hover:scale-110 active:scale-95"
+        className="animate-pulse-ring fixed bottom-5 right-5 z-50 grid h-16 w-16 place-items-center rounded-3xl bg-whatsapp text-whatsapp-foreground shadow-xl transition-transform hover:scale-110 active:scale-95"
       >
         <WhatsAppIcon className="h-8 w-8" />
       </a>
