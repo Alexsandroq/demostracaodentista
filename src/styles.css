@@ -5,13 +5,13 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 14px);
+  --radius-3xl: calc(var(--radius) + 24px);
+  --radius-4xl: calc(var(--radius) + 40px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -33,51 +33,50 @@
   --color-ring: var(--ring);
   --color-whatsapp: var(--whatsapp);
   --color-whatsapp-foreground: var(--whatsapp-foreground);
-  --color-mint: var(--mint);
-  --color-mint-foreground: var(--mint-foreground);
+  --color-coral: var(--coral);
+  --color-coral-foreground: var(--coral-foreground);
+  --color-sun: var(--sun);
+  --color-sun-foreground: var(--sun-foreground);
   --color-star: var(--star);
+  --font-display: "Baloo 2", ui-rounded, system-ui, sans-serif;
+  --font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  --radius: 1rem;
-  /* Branco limpo */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.32 0.03 240);
+  --radius: 1.25rem;
+  /* Creme quente */
+  --background: oklch(0.985 0.012 85);
+  --foreground: oklch(0.31 0.055 340);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.32 0.03 240);
+  --card-foreground: oklch(0.31 0.055 340);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.32 0.03 240);
-  /* Azul petróleo profundo — autoridade serena */
-  --primary: oklch(0.46 0.065 232);
-  --primary-foreground: oklch(0.99 0.003 210);
-  /* Ciano claro */
-  --secondary: oklch(0.96 0.02 200);
-  --secondary-foreground: oklch(0.42 0.06 230);
-  --muted: oklch(0.97 0.006 220);
-  --muted-foreground: oklch(0.55 0.025 240);
-  /* Turquesa suave */
-  --accent: oklch(0.93 0.045 195);
-  --accent-foreground: oklch(0.4 0.06 220);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.98 0.005 220);
-  --border: oklch(0.93 0.01 230);
-  --input: oklch(0.93 0.01 230);
-  --ring: oklch(0.75 0.09 200);
+  --popover-foreground: oklch(0.31 0.055 340);
+  /* Ameixa/uva profundo — acolhimento com autoridade */
+  --primary: oklch(0.4 0.11 335);
+  --primary-foreground: oklch(0.99 0.008 80);
+  /* Rosa leitoso */
+  --secondary: oklch(0.95 0.03 350);
+  --secondary-foreground: oklch(0.4 0.1 335);
+  --muted: oklch(0.965 0.016 75);
+  --muted-foreground: oklch(0.52 0.04 340);
+  /* Verde água pastel */
+  --accent: oklch(0.92 0.06 175);
+  --accent-foreground: oklch(0.37 0.07 190);
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(0.99 0.005 80);
+  --border: oklch(0.92 0.02 60);
+  --input: oklch(0.92 0.02 60);
+  --ring: oklch(0.72 0.15 20);
   /* Verde WhatsApp oficial */
   --whatsapp: oklch(0.72 0.19 155);
   --whatsapp-foreground: oklch(1 0 0);
-  /* Turquesa vibrante (destaques do hero) */
-  --mint: oklch(0.83 0.1 192);
-  --mint-foreground: oklch(0.3 0.05 225);
-  /* Estrelas do Google */
-  --star: oklch(0.8 0.16 85);
-  /* Gradiente institucional do hero */
-  --gradient-hero: linear-gradient(
-    100deg,
-    oklch(0.78 0.09 192 / 88%) 0%,
-    oklch(0.62 0.08 210 / 88%) 45%,
-    oklch(0.42 0.06 240 / 92%) 100%
-  );
+  /* Coral — cor de marca / destaque */
+  --coral: oklch(0.72 0.16 30);
+  --coral-foreground: oklch(1 0 0);
+  /* Amarelo sol */
+  --sun: oklch(0.87 0.14 88);
+  --sun-foreground: oklch(0.35 0.08 60);
+  --star: oklch(0.82 0.16 82);
 }
 
 @layer base {
@@ -92,14 +91,34 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
   }
 }
 
-/* Pulso suave para CTAs do WhatsApp */
+/* ===== Animações ===== */
+@utility reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @utility animate-pulse-ring {
-  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: pulse-ring 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes pulse-ring {
@@ -107,7 +126,7 @@
     box-shadow: 0 0 0 0 oklch(0.72 0.19 155 / 45%);
   }
   70% {
-    box-shadow: 0 0 0 16px oklch(0.72 0.19 155 / 0%);
+    box-shadow: 0 0 0 18px oklch(0.72 0.19 155 / 0%);
   }
   100% {
     box-shadow: 0 0 0 0 oklch(0.72 0.19 155 / 0%);
@@ -115,7 +134,7 @@
 }
 
 @utility animate-float-soft {
-  animation: float-soft 5s ease-in-out infinite;
+  animation: float-soft 6s ease-in-out infinite;
 }
 
 @keyframes float-soft {
@@ -124,10 +143,68 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-12px);
+  }
+}
+
+@utility animate-blob {
+  animation: blob 14s ease-in-out infinite;
+}
+
+@keyframes blob {
+  0%,
+  100% {
+    border-radius: 62% 38% 45% 55% / 55% 48% 52% 45%;
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    border-radius: 42% 58% 62% 38% / 45% 60% 40% 55%;
+    transform: rotate(6deg) scale(1.04);
+  }
+}
+
+@utility animate-wiggle {
+  animation: wiggle 3.5s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+  0%,
+  92%,
+  100% {
+    transform: rotate(0deg);
+  }
+  94% {
+    transform: rotate(-9deg);
+  }
+  96% {
+    transform: rotate(9deg);
+  }
+  98% {
+    transform: rotate(-5deg);
+  }
+}
+
+@utility card-lift {
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 45px -24px oklch(0.4 0.11 335 / 45%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }
 
 #lovable-badge {
-display: none !important;
+  display: none !important;
 }
